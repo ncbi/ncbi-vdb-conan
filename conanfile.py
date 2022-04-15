@@ -80,15 +80,20 @@ class NcbiVdb(ConanFile):
         else:
             prefix = "lib"
             suffix = ".a" if not self.options.shared else (".dylib" if self.settings.os == "Macos" else ".so")
+            src_suffix = ("." + self.version + suffix) if (self.options.shared and self.settings.os == "Macos") else (suffix + "." + self.version)
             package_libs = ["ncbi-vdb", "ncbi-wvdb"]
             files.mkdir(self, os.path.join(self.package_folder, "lib"))
             for lib in package_libs:
-                src  = os.path.join(self.build_folder, self._build_subfolder, "lib", prefix + lib + suffix + "." + self.version)
+                src  = os.path.join(self.build_folder, self._build_subfolder, "lib", prefix + lib + src_suffix)
                 dest = os.path.join(self.package_folder, "lib", prefix + lib + suffix)
                 files.rename(self,src,dest)
 
 #----------------------------------------------------------------------------
     def package_info(self):
+        if self.settings.os == "Windows":
+            self.cpp_info.system_libs = ["crypt32"]
+        else:
+            self.cpp_info.system_libs = ["m", "dl", "pthread"]
         self.cpp_info.includedirs = ["include"]
         if self.settings.os == "Linux":
             self.cpp_info.includedirs.append( os.path.join("include", "os", "linux"))
@@ -110,8 +115,8 @@ class NcbiVdb(ConanFile):
         elif self.settings.compiler == "Visual Studio":
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++", str(self.settings.arch)))
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++"))
-            if "MT" in self.settings.compiler.runtime:
-                self.cpp_info.libs = ["ncbi-vdb", "ncbi-wvdb"]
+            if not self.options.shared  or "MT" in self.settings.compiler.runtime:
+                self.cpp_info.libs = ["ncbi-vdb.lib", "ncbi-wvdb.lib"]
             else:
-                self.cpp_info.libs = ["ncbi-vdb-md", "ncbi-wvdb-md"]
+                self.cpp_info.libs = ["ncbi-vdb-md.lib", "ncbi-wvdb-md.lib"]
 
