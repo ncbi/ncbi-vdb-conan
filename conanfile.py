@@ -116,7 +116,7 @@ class NcbiVdb(ConanFile):
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++", str(self.settings.arch)))
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++"))
             if not self.options.shared  or "MT" in self.settings.compiler.runtime:
-                self.cpp_info.libs = ["ncbi-vdb.lib", "ncbi-wvdb.lib"]
+                self.cpp_info.libs = ["ncbi-vdb", "ncbi-wvdb"]
             else:
-                self.cpp_info.libs = ["ncbi-vdb-md.lib", "ncbi-wvdb-md.lib"]
+                self.cpp_info.libs = ["ncbi-vdb-md", "ncbi-wvdb-md"]
 
