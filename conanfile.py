@@ -47,6 +47,8 @@ class NcbiVdb(ConanFile):
             raise ConanInvalidConfiguration("This operating system is not supported")
         if self.settings.compiler not in ["gcc", "apple-clang", "Visual Studio"]:   
             raise ConanInvalidConfiguration("This compiler is not supported")
+        if hasattr(self, "settings_build") and tools.cross_building(self, skip_x64_x86=True):
+            raise ConanInvalidConfiguration("Cross compilation is not supported")
 
     def config_options(self):
         if self.settings.os == "Windows":
