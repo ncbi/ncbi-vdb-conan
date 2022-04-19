@@ -93,7 +93,7 @@ class NcbiVdb(ConanFile):
 #----------------------------------------------------------------------------
     def package_info(self):
         if self.settings.os == "Windows":
-            self.cpp_info.system_libs = ["crypt32"]
+            self.cpp_info.system_libs = ["ws2_32", "crypt32"]
         else:
             self.cpp_info.system_libs = ["m", "dl", "pthread"]
         self.cpp_info.includedirs = ["include"]
