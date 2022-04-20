@@ -10,10 +10,9 @@ class NcbiVdbTest(ConanFile):
         cmake.configure()
         cmake.build()
 
+    def imports(self):
+        self.copy("*.sra", src=self.recipe_folder)
+
     def test(self):
         if not tools.cross_building(self):
-            if self.settings.compiler == "Visual Studio":
-                self.run("ctest -C " + str(self.settings.build_type))
-            else:
-                self.run("ctest")
-
+            self.run(os.path.join("bin", "ncbi-vdb-test"),  run_environment=True)

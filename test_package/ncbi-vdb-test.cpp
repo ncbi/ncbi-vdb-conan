@@ -5,10 +5,9 @@
 #include <vdb/cursor.h>
 
 int main() {
-    const char *file_name = "SRR6796973";
+    const char *file_name = "SRR.sra";
     const VDBManager *mgr = 0;
     const VDatabase *db = 0;
-    const VTable *seq_table = 0;
     KNamelist *namelist = 0;
     const char* tablename;
 
@@ -18,17 +17,17 @@ int main() {
     VDatabaseListTbl(db, &namelist);
     uint32_t count = 0;
     KNamelistCount ( namelist, &count );
-    std::cout << "File " << file_name << "Sample contains the following tables:" << std::endl;
+    std::cout << "File " << file_name << " contains the following tables:" << std::endl;
     for (uint32_t c = 0; c < count; ++c ) {
         KNamelistGet ( namelist, 0, &tablename);
         std::cout << "    " << tablename << std::endl;
+        const VTable *seq_table = 0;
+        VDatabaseOpenTableRead(db, &seq_table, tablename);
+        const VCursor* seq_cursor = 0;
+        VTableCreateCursorRead(seq_table, &seq_cursor);
+        VCursorRelease(seq_cursor);
+        VTableRelease(seq_table);
     }
-
-    VDatabaseOpenTableRead(db, &seq_table, tablename);
-    const VCursor* seq_cursor = 0;
-    VTableCreateCursorRead(seq_table, &seq_cursor);
-    VCursorRelease(seq_cursor);
-    VTableRelease(seq_table);
 
     KNamelistRelease(namelist);
     VDatabaseRelease(db);
