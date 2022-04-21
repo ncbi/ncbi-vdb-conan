@@ -5,7 +5,7 @@
 #include <vdb/cursor.h>
 
 int main() {
-    const char *file_name = "SRR.sra";
+    const char *file_name = "../../SRR.sra";
     const VDBManager *mgr = 0;
     const VDatabase *db = 0;
     KNamelist *namelist = 0;
