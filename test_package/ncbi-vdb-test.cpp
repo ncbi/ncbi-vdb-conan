@@ -17,10 +17,10 @@ int main() {
     VDatabaseListTbl(db, &namelist);
     uint32_t count = 0;
     KNamelistCount ( namelist, &count );
-    std::cout << "File " << file_name << " contains the following tables:" << std::endl;
+//    std::cout << "File " << file_name << " contains the following tables:" << std::endl;
     for (uint32_t c = 0; c < count; ++c ) {
         KNamelistGet ( namelist, 0, &tablename);
-        std::cout << "    " << tablename << std::endl;
+//        std::cout << "    " << tablename << std::endl;
         const VTable *seq_table = 0;
         VDatabaseOpenTableRead(db, &seq_table, tablename);
         const VCursor* seq_cursor = 0;
