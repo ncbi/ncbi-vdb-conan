@@ -12,4 +12,4 @@ class NcbiVdbTest(ConanFile):
 
     def test(self):
         if not tools.cross_building(self):
-            self.run(os.path.join("bin", "ncbi-vdb-test"),  run_environment=True)
+            self.run(os.path.join("bin", "ncbi-vdb-test") + " \"" + os.path.join(self.recipe_folder, "SRR.sra\""),  run_environment=True)
