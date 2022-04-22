@@ -4,8 +4,9 @@
 #include <vdb/table.h>
 #include <vdb/cursor.h>
 
-int main() {
-    const char *file_name = "../../SRR.sra";
+int main(int argc, char *argv[])
+{
+    const char *file_name = argv[1];
     const VDBManager *mgr = 0;
     const VDatabase *db = 0;
     KNamelist *namelist = 0;
