@@ -9,7 +9,7 @@ class NcbiVdb(ConanFile):
     homepage = "https://github.com/ncbi/ncbi-vdb"
     url = "https://github.com/conan-io/conan-center-index"
     description = "The SRA Toolkit and SDK from NCBI is a collection of tools and libraries for using data in the INSDC Sequence Read Archives."
-    topics = ("ncbi", "biotechnology", "bioinformatics", "genbank", "gene", "genome", "genetic", "sequence", "alignment", "blast", "biological", "toolkit")
+    topics = ("ncbi", "biotechnology", "bioinformatics", "genbank", "gene", "genome", "genetic", "sequence", "alignment", "biological", "toolkit")
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake", "cmake_find_package"
 
