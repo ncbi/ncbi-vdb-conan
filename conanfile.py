@@ -5,11 +5,11 @@ import os
 
 class NcbiVdb(ConanFile):
     name = "ncbi-vdb"
-    license = "CC0-1.0 todo"
+    license = "CC0-1.0"
     homepage = "https://github.com/ncbi/ncbi-vdb"
     url = "https://github.com/conan-io/conan-center-index"
-    description = "The SRA Toolkit and SDK from NCBI is a collection of libraries for using data in the INSDC Sequence Read Archives."
-    topics = ("ncbi", "todo")
+    description = "The SRA Toolkit and SDK from NCBI is a collection of tools and libraries for using data in the INSDC Sequence Read Archives."
+    topics = ("ncbi", "biotechnology", "bioinformatics", "genbank", "gene", "genome", "genetic", "sequence", "alignment", "blast", "biological", "toolkit")
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake", "cmake_find_package"
 
