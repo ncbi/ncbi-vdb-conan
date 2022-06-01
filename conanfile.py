@@ -21,7 +21,11 @@ class NcbiVdb(ConanFile):
         "shared":     False,
         "fPIC":       True
     }
-
+    requires = [
+        ("bzip2/1.0.8"),
+        ("zlib/1.2.12"),
+        ("zstd/1.5.2")
+    ]
 #----------------------------------------------------------------------------
     def set_version(self):
         if self.version == None:
@@ -29,7 +33,9 @@ class NcbiVdb(ConanFile):
 #----------------------------------------------------------------------------
     @property
     def _source_subfolder(self):
-        return self.name + "-" + self.version
+#        return self.name + "-" + self.version
+# with git clone, use dot
+        return "."
 
     @property
     def _build_subfolder(self):
@@ -38,6 +44,7 @@ class NcbiVdb(ConanFile):
     def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["LIBS_ONLY"] = "TRUE"
+        cmake.definitions["_NCBIVDB_CFG_PACKAGING"] = "TRUE"
         return cmake
 
     def validate(self):
@@ -45,8 +52,6 @@ class NcbiVdb(ConanFile):
             raise ConanInvalidConfiguration("This operating system is not supported")
         if self.settings.compiler not in ["gcc", "apple-clang", "Visual Studio"]:   
             raise ConanInvalidConfiguration("This compiler is not supported")
-        if hasattr(self, "settings_build") and tools.cross_building(self, skip_x64_x86=True):
-            raise ConanInvalidConfiguration("Cross compilation is not supported")
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -57,7 +62,12 @@ class NcbiVdb(ConanFile):
             del self.options.fPIC
 
     def source(self):
-        tools.get(**self.conan_data["sources"][self.version], strip_root = False)
+#        tools.get(**self.conan_data["sources"][self.version], strip_root = False)
+
+# see also _source_subfolder
+        tk_git = self.conan_data["sources"][self.version]["git"] if "git" in self.conan_data["sources"][self.version].keys() else ""
+        git = tools.Git()
+        git.clone(tk_git, branch = "master", args = "--single-branch", shallow = True)
 
     def build(self):
         cmake = self._configure_cmake()
@@ -65,38 +75,8 @@ class NcbiVdb(ConanFile):
         cmake.build()
 
     def package(self):
-        self.copy("*.*", "include", os.path.join(self._source_subfolder, "interfaces"))
-        self.copy("LICENSE", "licenses", self._source_subfolder)
-        files.mkdir(self, os.path.join(self.package_folder, "lib"))
-        package_libs = ["ncbi-vdb", "ncbi-wvdb"]
-        if self.settings.compiler == "Visual Studio":
-            if self.options.shared:
-                files.mkdir(self, os.path.join(self.package_folder, "bin"))
-                for lib in package_libs:
-                    libext = [".lib", ".exp"]
-                    for suffix in libext:
-                        src_suffix = suffix if "MT" in self.settings.compiler.runtime else ("-md" + suffix)
-                        src  = os.path.join(self.build_folder, self._build_subfolder, str(self.settings.build_type), "bin", lib + src_suffix)
-                        dest = os.path.join(self.package_folder, "lib", lib + src_suffix)
-                        files.rename(self,src,dest)
-                    suffix = ".dll"
-                    src_suffix = suffix if "MT" in self.settings.compiler.runtime else ("-md" + suffix)
-                    src  = os.path.join(self.build_folder, self._build_subfolder, str(self.settings.build_type), "bin", lib + src_suffix)
-                    dest = os.path.join(self.package_folder, "bin", lib + src_suffix)
-                    files.rename(self,src,dest)
-            else:
-                for lib in package_libs:
-                    src  = os.path.join(self.build_folder, self._build_subfolder, str(self.settings.build_type), "lib", lib + ".lib")
-                    dest = os.path.join(self.package_folder, "lib", lib + ".lib")
-                    files.rename(self,src,dest)
-        else:
-            prefix = "lib"
-            suffix = ".a" if not self.options.shared else (".dylib" if self.settings.os == "Macos" else ".so")
-            src_suffix = ("." + self.version + suffix) if (self.options.shared and self.settings.os == "Macos") else (suffix + "." + self.version)
-            for lib in package_libs:
-                src  = os.path.join(self.build_folder, self._build_subfolder, "lib", prefix + lib + src_suffix)
-                dest = os.path.join(self.package_folder, "lib", prefix + lib + suffix)
-                files.rename(self,src,dest)
+        cmake = self._configure_cmake()
+        cmake.install(build_dir = self._build_subfolder)
 
     def package_info(self):
         self.cpp_info.includedirs = ["include"]
