@@ -1,7 +1,10 @@
-from conans import ConanFile, CMake, tools
+from conan import ConanFile
+from conan.tools.cmake import CMakeDeps, CMakeToolchain, CMake, cmake_layout
 from conans.errors import ConanInvalidConfiguration
-from conan.tools import files
+from conans import tools
 import os
+
+required_conan_version = ">=1.37.0"
 
 class NcbiVdb(ConanFile):
     name = "ncbi-vdb"
@@ -11,7 +14,6 @@ class NcbiVdb(ConanFile):
     description = "The SRA Toolkit and SDK from NCBI is a collection of tools and libraries for using data in the INSDC Sequence Read Archives."
     topics = ("ncbi", "biotechnology", "bioinformatics", "genbank", "gene", "genome", "genetic", "sequence", "alignment", "biological", "toolkit")
     settings = "os", "compiler", "build_type", "arch"
-    generators = "cmake", "cmake_find_package"
 
     options = {
         "shared":     [True, False],
@@ -31,21 +33,6 @@ class NcbiVdb(ConanFile):
         if self.version == None:
             self.version = "3.0.0"
 #----------------------------------------------------------------------------
-    @property
-    def _source_subfolder(self):
-#        return self.name + "-" + self.version
-# with git clone, use dot
-        return "."
-
-    @property
-    def _build_subfolder(self):
-        return "b"
-
-    def _configure_cmake(self):
-        cmake = CMake(self)
-        cmake.definitions["LIBS_ONLY"] = "TRUE"
-        cmake.definitions["_NCBIVDB_CFG_PACKAGING"] = "TRUE"
-        return cmake
 
     def validate(self):
         if self.settings.os not in ["Linux", "Macos", "Windows"]:   
@@ -61,22 +48,30 @@ class NcbiVdb(ConanFile):
         if self.options.shared:
             del self.options.fPIC
 
-    def source(self):
-#        tools.get(**self.conan_data["sources"][self.version], strip_root = False)
+    def layout(self):
+        cmake_layout(self)
+        self.folders.source = "."
 
-# see also _source_subfolder
+    def source(self):
         tk_git = self.conan_data["sources"][self.version]["git"] if "git" in self.conan_data["sources"][self.version].keys() else ""
         git = tools.Git()
         git.clone(tk_git, branch = "master", args = "--single-branch", shallow = True)
 
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.variables["_NCBIVDB_CFG_PACKAGING"] = True
+        tc.generate()
+        cmdep = CMakeDeps(self)
+        cmdep.generate()
+
     def build(self):
-        cmake = self._configure_cmake()
-        cmake.configure(source_folder=self._source_subfolder, build_folder = self._build_subfolder)
+        cmake = CMake(self)
+        cmake.configure(variables = {"_NCBIVDB_CFG_PACKAGING" : "ON"})
         cmake.build()
 
     def package(self):
-        cmake = self._configure_cmake()
-        cmake.install(build_dir = self._build_subfolder)
+        cmake = CMake(self)
+        cmake.install()
 
     def package_info(self):
         self.cpp_info.includedirs = ["include"]
