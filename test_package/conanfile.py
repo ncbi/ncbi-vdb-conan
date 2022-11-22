@@ -6,11 +6,9 @@ from conan.tools.build import cross_building
 class NcbiVdbTest(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeDeps", "CMakeToolchain", "VirtualBuildEnv", "VirtualRunEnv"
-    apply_env = False
-    test_type = "explicit"
-    requires = [
-        ("ncbi-vdb/3.0.0")
-    ]
+
+    def requirements(self):
+        self.requires(self.tested_reference_str)
 
     def layout(self):
         cmake_layout(self)

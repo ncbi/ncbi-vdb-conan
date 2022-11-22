@@ -2,6 +2,7 @@ from conan import ConanFile
 from conan.tools.cmake import CMakeDeps, CMakeToolchain, CMake, cmake_layout
 from conans.errors import ConanInvalidConfiguration
 from conans import tools
+from conan.tools.files import apply_conandata_patches, export_conandata_patches
 import os
 
 required_conan_version = ">=1.37.0"
@@ -31,8 +32,10 @@ class NcbiVdb(ConanFile):
 #----------------------------------------------------------------------------
     def set_version(self):
         if self.version == None:
-            self.version = "3.0.0"
+            self.version = "3.0.1"
 #----------------------------------------------------------------------------
+    def export_sources(self):
+        export_conandata_patches(self)
 
     def validate(self):
         if self.settings.os not in ["Linux", "Macos", "Windows"]:   
@@ -53,9 +56,8 @@ class NcbiVdb(ConanFile):
         self.folders.source = "."
 
     def source(self):
-        tk_git = self.conan_data["sources"][self.version]["git"] if "git" in self.conan_data["sources"][self.version].keys() else ""
-        git = tools.Git()
-        git.clone(tk_git, branch = "master", args = "--single-branch", shallow = True)
+        tools.get(**self.conan_data["sources"][self.version], strip_root = True)
+        apply_conandata_patches(self)
 
     def generate(self):
         tc = CMakeToolchain(self)
