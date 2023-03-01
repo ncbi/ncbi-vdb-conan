@@ -20,4 +20,6 @@ class NcbiVdbTest(ConanFile):
 
     def test(self):
         if not cross_building(self):
-            self.run(os.path.join(self.cpp.build.bindirs[0], "ncbi-vdb-test") + " \"" + os.path.join(self.recipe_folder, "SRR.sra\""),  env="conanrun")
+            self.run(os.path.join(self.cpp.build.bindirs[0],
+                "ncbi-vdb-test") + " \"" + os.path.join(self.recipe_folder, "SRR.sra\""),
+                 env="conanrun")

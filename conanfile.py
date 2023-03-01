@@ -1,11 +1,8 @@
 from conan import ConanFile
 from conan.tools.cmake import CMakeDeps, CMakeToolchain, CMake, cmake_layout
-from conans.errors import ConanInvalidConfiguration
-from conans import tools
-from conan.tools.files import apply_conandata_patches, export_conandata_patches
+from conan.errors import ConanInvalidConfiguration
+from conan import tools
 import os
-
-required_conan_version = ">=1.37.0"
 
 class NcbiVdb(ConanFile):
     name = "ncbi-vdb"
@@ -29,18 +26,15 @@ class NcbiVdb(ConanFile):
         ("zlib/1.2.12"),
         ("zstd/1.5.2")
     ]
-#----------------------------------------------------------------------------
-    def set_version(self):
-        if self.version == None:
-            self.version = "3.0.1"
+
 #----------------------------------------------------------------------------
     def export_sources(self):
-        export_conandata_patches(self)
+        tools.files.export_conandata_patches(self)
 
     def validate(self):
         if self.settings.os not in ["Linux", "Macos", "Windows"]:   
             raise ConanInvalidConfiguration("This operating system is not supported")
-        if self.settings.compiler not in ["gcc", "apple-clang", "Visual Studio"]:   
+        if self.settings.compiler not in ["gcc", "apple-clang", "msvc", "Visual Studio"]:   
             raise ConanInvalidConfiguration("This compiler is not supported")
 
     def config_options(self):
@@ -48,7 +42,7 @@ class NcbiVdb(ConanFile):
             del self.options.fPIC
 
     def configure(self):
-        if self.options.shared:
+        if self.options.shared and self.settings.os != "Windows":
             del self.options.fPIC
 
     def layout(self):
@@ -56,8 +50,8 @@ class NcbiVdb(ConanFile):
         self.folders.source = "."
 
     def source(self):
-        tools.get(**self.conan_data["sources"][self.version], strip_root = True)
-        apply_conandata_patches(self)
+        tools.files.get(self, **self.conan_data["sources"][self.version], strip_root = True)
+        tools.files.apply_conandata_patches(self)
 
     def generate(self):
         tc = CMakeToolchain(self)
@@ -92,7 +86,7 @@ class NcbiVdb(ConanFile):
         elif self.settings.compiler == "apple-clang":
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "clang", str(self.settings.arch)))
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "clang"))
-        elif self.settings.compiler == "Visual Studio":
+        elif self.settings.compiler == "msvc" or self.settings.compiler == "Visual Studio":
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++", str(self.settings.arch)))
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++"))
 
@@ -100,5 +94,5 @@ class NcbiVdb(ConanFile):
             self.cpp_info.system_libs = ["ws2_32", "crypt32"]
         else:
             self.cpp_info.system_libs = ["m", "dl", "pthread"]
-        self.cpp_info.libs = tools.collect_libs(self)
+        self.cpp_info.libs = tools.files.collect_libs(self)
 
