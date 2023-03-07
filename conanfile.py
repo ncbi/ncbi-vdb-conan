@@ -21,11 +21,6 @@ class NcbiVdb(ConanFile):
         "shared":     False,
         "fPIC":       True
     }
-    requires = [
-        ("bzip2/1.0.8"),
-        ("zlib/1.2.12"),
-        ("zstd/1.5.2")
-    ]
 
 #----------------------------------------------------------------------------
     def export_sources(self):
@@ -34,7 +29,7 @@ class NcbiVdb(ConanFile):
     def validate(self):
         if self.settings.os not in ["Linux", "Macos", "Windows"]:   
             raise ConanInvalidConfiguration("This operating system is not supported")
-        if self.settings.compiler not in ["gcc", "apple-clang", "msvc", "Visual Studio"]:   
+        if not tools.microsoft.is_msvc(self) and self.settings.compiler not in ["gcc", "apple-clang"]:
             raise ConanInvalidConfiguration("This compiler is not supported")
 
     def config_options(self):
@@ -48,6 +43,11 @@ class NcbiVdb(ConanFile):
     def layout(self):
         cmake_layout(self)
         self.folders.source = "."
+
+    def requirements(self):
+        req = self.conan_data["requires"][self.version]
+        for pkg in req:
+            self.requires(pkg)
 
     def source(self):
         tools.files.get(self, **self.conan_data["sources"][self.version], strip_root = True)
@@ -86,7 +86,7 @@ class NcbiVdb(ConanFile):
         elif self.settings.compiler == "apple-clang":
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "clang", str(self.settings.arch)))
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "clang"))
-        elif self.settings.compiler == "msvc" or self.settings.compiler == "Visual Studio":
+        elif tools.microsoft.is_msvc(self):
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++", str(self.settings.arch)))
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++"))
 
