@@ -3,6 +3,7 @@ from conan.tools.cmake import CMakeDeps, CMakeToolchain, CMake, cmake_layout
 from conan.errors import ConanInvalidConfiguration
 from conan import tools
 import os
+import yaml
 
 class NcbiVdb(ConanFile):
     name = "ncbi-vdb"
@@ -23,6 +24,13 @@ class NcbiVdb(ConanFile):
     }
 
 #----------------------------------------------------------------------------
+    @property
+    def _requirements_filename(self):
+        return "requirements.yml"
+
+    def export(self):
+        tools.files.copy(self, self._requirements_filename, self.recipe_folder, self.export_folder)
+
     def export_sources(self):
         tools.files.export_conandata_patches(self)
 
@@ -45,7 +53,9 @@ class NcbiVdb(ConanFile):
         self.folders.source = "."
 
     def requirements(self):
-        req = self.conan_data["requires"][self.version]
+        requirements_filepath = os.path.join(self.recipe_folder, self._requirements_filename)
+        data = yaml.safe_load(open(requirements_filepath))
+        req = data["requirements"][self.version]
         for pkg in req:
             self.requires(pkg)
 
