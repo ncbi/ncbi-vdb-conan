@@ -1,19 +1,20 @@
 from conan import ConanFile
-from conan.tools.cmake import CMakeDeps, CMakeToolchain, CMake, cmake_layout
 from conan.errors import ConanInvalidConfiguration
-from conan import tools
+from conan.tools.microsoft import is_msvc
+from conan.tools.files import apply_conandata_patches, export_conandata_patches, get, copy, collect_libs
+from conan.tools.cmake import CMakeDeps, CMakeToolchain, CMake, cmake_layout
 import os
 import yaml
 
 class NcbiVdb(ConanFile):
     name = "ncbi-vdb"
-    license = "CC0-1.0"
-    homepage = "https://github.com/ncbi/ncbi-vdb"
-    url = "https://github.com/conan-io/conan-center-index"
     description = "The SRA Toolkit and SDK from NCBI is a collection of tools and libraries for using data in the INSDC Sequence Read Archives."
+    license = "CC0-1.0"
+    url = "https://github.com/conan-io/conan-center-index"
+    homepage = "https://github.com/ncbi/ncbi-vdb"
     topics = ("ncbi", "biotechnology", "bioinformatics", "genbank", "gene", "genome", "genetic", "sequence", "alignment", "biological", "toolkit")
-    settings = "os", "compiler", "build_type", "arch"
-
+    package_type = "library"
+    settings = "os", "arch", "compiler", "build_type"
     options = {
         "shared":     [True, False],
         "fPIC":       [True, False]
@@ -23,22 +24,15 @@ class NcbiVdb(ConanFile):
         "fPIC":       True
     }
 
-#----------------------------------------------------------------------------
     @property
     def _requirements_filename(self):
         return "requirements.yml"
 
     def export(self):
-        tools.files.copy(self, self._requirements_filename, self.recipe_folder, self.export_folder)
+        copy(self, self._requirements_filename, self.recipe_folder, self.export_folder)
 
     def export_sources(self):
-        tools.files.export_conandata_patches(self)
-
-    def validate(self):
-        if self.settings.os not in ["Linux", "Macos", "Windows"]:   
-            raise ConanInvalidConfiguration("This operating system is not supported")
-        if not tools.microsoft.is_msvc(self) and self.settings.compiler not in ["gcc", "apple-clang"]:
-            raise ConanInvalidConfiguration("This compiler is not supported")
+        export_conandata_patches(self)
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -49,19 +43,25 @@ class NcbiVdb(ConanFile):
             self.options.rm_safe("fPIC")
 
     def layout(self):
-        cmake_layout(self)
-        self.folders.source = "."
+        cmake_layout(self, src_folder="src")
 
     def requirements(self):
         requirements_filepath = os.path.join(self.recipe_folder, self._requirements_filename)
-        data = yaml.safe_load(open(requirements_filepath))
-        req = data["requirements"][self.version]
-        for pkg in req:
-            self.requires(pkg)
+        with open(requirements_filepath, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+            req = data["requirements"][self.version]
+            for pkg in req:
+                self.requires(pkg)
+
+    def validate(self):
+        if self.settings.os not in ["Linux", "Macos", "Windows"]:   
+            raise ConanInvalidConfiguration("This operating system is not supported")
+        if not is_msvc(self) and self.settings.compiler not in ["gcc", "apple-clang"]:
+            raise ConanInvalidConfiguration("This compiler is not supported")
 
     def source(self):
-        tools.files.get(self, **self.conan_data["sources"][self.version], strip_root = True)
-        tools.files.apply_conandata_patches(self)
+        get(self, **self.conan_data["sources"][self.version], strip_root = True)
+        apply_conandata_patches(self)
 
     def generate(self):
         tc = CMakeToolchain(self)
@@ -96,7 +96,7 @@ class NcbiVdb(ConanFile):
         elif self.settings.compiler == "apple-clang":
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "clang", str(self.settings.arch)))
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "clang"))
-        elif tools.microsoft.is_msvc(self):
+        elif is_msvc(self):
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++", str(self.settings.arch)))
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++"))
 
@@ -104,5 +104,5 @@ class NcbiVdb(ConanFile):
             self.cpp_info.system_libs = ["ws2_32", "crypt32"]
         else:
             self.cpp_info.system_libs = ["m", "dl", "pthread"]
-        self.cpp_info.libs = tools.files.collect_libs(self)
+        self.cpp_info.libs = collect_libs(self)
 

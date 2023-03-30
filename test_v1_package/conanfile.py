@@ -1,9 +1,10 @@
+from conans import ConanFile, CMake
+from conan.tools.build import cross_building
 import os
-from conans import ConanFile, CMake, tools
 
-class NcbiVdbTest(ConanFile):
-    settings = "os", "compiler", "build_type", "arch"
-    generators = "cmake"
+class NcbiVdbTestV1Conan(ConanFile):
+    settings = "os", "arch", "compiler", "build_type"
+    generators = "cmake", "cmake_find_package_multi"
 
     def build(self):
         cmake = CMake(self)
@@ -11,5 +12,7 @@ class NcbiVdbTest(ConanFile):
         cmake.build()
 
     def test(self):
-        if not tools.cross_building(self):
-            self.run(os.path.join("bin", "ncbi-vdb-test") + " \"" + os.path.join(self.recipe_folder, "SRR.sra\""),  run_environment=True)
+        if not cross_building(self):
+            bin_path = os.path.join("bin", "test_package")
+            bin_path += " \"" + os.path.join(self.recipe_folder, "..", "test_package", "SRR.sra\"")
+            self.run(bin_path, run_environment=True)
