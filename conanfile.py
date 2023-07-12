@@ -28,6 +28,10 @@ class NcbiVdb(ConanFile):
     def _requirements_filename(self):
         return "requirements.yml"
 
+    @property
+    def _vdb_arch(self):
+        return "arm64" if str(self.settings.arch) == "armv8" else str(self.settings.arch)
+
     def export(self):
         copy(self, self._requirements_filename, self.recipe_folder, self.export_folder)
 
@@ -91,13 +95,13 @@ class NcbiVdb(ConanFile):
             self.cpp_info.includedirs.append( os.path.join("include", "os", "win"))
 
         if self.settings.compiler == "gcc":
-            self.cpp_info.includedirs.append( os.path.join("include", "cc", "gcc", str(self.settings.arch)))
+            self.cpp_info.includedirs.append( os.path.join("include", "cc", "gcc", self._vdb_arch))
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "gcc"))
         elif self.settings.compiler == "apple-clang":
-            self.cpp_info.includedirs.append( os.path.join("include", "cc", "clang", str(self.settings.arch)))
+            self.cpp_info.includedirs.append( os.path.join("include", "cc", "clang", self._vdb_arch))
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "clang"))
         elif is_msvc(self):
-            self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++", str(self.settings.arch)))
+            self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++", self._vdb_arch))
             self.cpp_info.includedirs.append( os.path.join("include", "cc", "vc++"))
 
         if self.settings.os == "Windows":
