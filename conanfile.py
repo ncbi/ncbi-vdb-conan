@@ -3,6 +3,7 @@ from conan.errors import ConanInvalidConfiguration
 from conan.tools.microsoft import is_msvc
 from conan.tools.files import apply_conandata_patches, export_conandata_patches, get, copy, collect_libs
 from conan.tools.cmake import CMakeDeps, CMakeToolchain, CMake, cmake_layout
+from conan.tools.scm import Version
 import os
 import yaml
 
@@ -53,7 +54,7 @@ class NcbiVdb(ConanFile):
         requirements_filepath = os.path.join(self.recipe_folder, self._requirements_filename)
         with open(requirements_filepath, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f)
-            req = data["requirements"][self.version]
+            req = data["requirements"][f"{Version(self.version).major}.{Version(self.version).minor}"]
             for pkg in req:
                 self.requires(pkg)
 
