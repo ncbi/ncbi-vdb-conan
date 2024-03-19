@@ -15,3 +15,4 @@ NCBI VDB versions:
 - [3.0.6](https://github.com/ncbi/ncbi-vdb/releases/tag/3.0.6)
 - [3.0.7](https://github.com/ncbi/ncbi-vdb/releases/tag/3.0.7)
 - [3.0.10](https://github.com/ncbi/ncbi-vdb/releases/tag/3.0.10)
+- [3.1.0](https://github.com/ncbi/ncbi-vdb/releases/tag/3.1.0)
