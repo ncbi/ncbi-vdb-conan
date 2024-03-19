@@ -14,6 +14,9 @@ sources:
   "3.0.10":
     url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.0.10.tar.gz"
     sha256: "2e088a8542e6c3bc1aad01a5d2fca2ef5b745c36a3aafd3b0b42cb53b42b345d"
+  "3.1.0":
+    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.1.0.tar.gz"
+    sha256: "eec5a64b8353a201bd4cf2c58cfcbb3622327397c3b11696ae59d827fcfcea9d"
 
 patches:
   "3.0.1":
