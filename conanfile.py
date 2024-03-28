@@ -77,7 +77,10 @@ class NcbiVdb(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure(variables = {"_NCBIVDB_CFG_PACKAGING" : "ON"})
+        if self.settings.os == "Windows" and Version(self.version) <= "3.0.10":
+            cmake.configure(variables = {"_NCBIVDB_CFG_PACKAGING" : "ON", "CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION_MAXIMUM": "10.0.19041.0"})
+        else:
+            cmake.configure(variables = {"_NCBIVDB_CFG_PACKAGING" : "ON"})
         cmake.build()
 
     def package(self):

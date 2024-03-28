@@ -21,3 +21,6 @@ sources:
 patches:
   "3.0.1":
     - patch_file: "patches/3.0.1-build-env.patch"
+  "3.1.0":
+    - patch_file: "patches/VDB-5619.patch"
+  
