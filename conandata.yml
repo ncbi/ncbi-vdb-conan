@@ -17,10 +17,12 @@ sources:
   "3.1.0":
     url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.1.0.tar.gz"
     sha256: "eec5a64b8353a201bd4cf2c58cfcbb3622327397c3b11696ae59d827fcfcea9d"
+  "3.1.1":
+    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.1.1.tar.gz"
+    sha256: "e9766f259853c696be48e289b08cb5ae6e198d82d7ffee79f09ce7f720487991"
 
 patches:
   "3.0.1":
     - patch_file: "patches/3.0.1-build-env.patch"
   "3.1.0":
     - patch_file: "patches/VDB-5619.patch"
-  
