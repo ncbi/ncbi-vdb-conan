@@ -1,25 +1,28 @@
 sources:
-  "3.0.1":
-    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.0.1.tar.gz"
-    sha256: "d72a59ba0a837692a148fae7bdc7ebb441ba22d77c674471d378f43808d9dea1"
-  "3.0.5":
-    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.0.5.tar.gz"
-    sha256: "a32672d7f76507a77ceb29f023855eaf5bf4d150ddd21b55c013b499f3b83735"
-  "3.0.6":
-    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.0.6.tar.gz"
-    sha256: "4b6f93336bf8664fdcc151d41ea0793f0b0f88cfcb7c2aa049f162a72f905223"
-  "3.0.7":
-    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.0.7.tar.gz"
-    sha256: "357f9648e824ae860eb8433c04099d748b804d76bdcfd05e41857eee098869ee"
-  "3.0.10":
-    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.0.10.tar.gz"
-    sha256: "2e088a8542e6c3bc1aad01a5d2fca2ef5b745c36a3aafd3b0b42cb53b42b345d"
-  "3.1.0":
-    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.1.0.tar.gz"
-    sha256: "eec5a64b8353a201bd4cf2c58cfcbb3622327397c3b11696ae59d827fcfcea9d"
   "3.1.1":
     url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.1.1.tar.gz"
     sha256: "e9766f259853c696be48e289b08cb5ae6e198d82d7ffee79f09ce7f720487991"
+  "3.1.0":
+    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.1.0.tar.gz"
+    sha256: "eec5a64b8353a201bd4cf2c58cfcbb3622327397c3b11696ae59d827fcfcea9d"
+  "3.0.10":
+    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.0.10.tar.gz"
+    sha256: "2e088a8542e6c3bc1aad01a5d2fca2ef5b745c36a3aafd3b0b42cb53b42b345d"
+  "3.0.7":
+    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.0.7.tar.gz"
+    sha256: "357f9648e824ae860eb8433c04099d748b804d76bdcfd05e41857eee098869ee"
+  "3.0.6":
+    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.0.6.tar.gz"
+    sha256: "4b6f93336bf8664fdcc151d41ea0793f0b0f88cfcb7c2aa049f162a72f905223"
+  "3.0.5":
+    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.0.5.tar.gz"
+    sha256: "a32672d7f76507a77ceb29f023855eaf5bf4d150ddd21b55c013b499f3b83735"
+  "3.0.1":
+    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.0.1.tar.gz"
+    sha256: "d72a59ba0a837692a148fae7bdc7ebb441ba22d77c674471d378f43808d9dea1"
+  "0.0.0":
+    git: "https://github.com/ncbi/ncbi-vdb.git"
+    branch: "engineering"
 
 patches:
   "3.0.1":

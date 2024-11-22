@@ -4,6 +4,7 @@ from conan.tools.microsoft import is_msvc
 from conan.tools.files import apply_conandata_patches, export_conandata_patches, get, copy, collect_libs
 from conan.tools.cmake import CMakeDeps, CMakeToolchain, CMake, cmake_layout
 from conan.tools.scm import Version
+from conan.tools.scm import Git
 import os
 import yaml
 
@@ -65,7 +66,16 @@ class NcbiVdb(ConanFile):
             raise ConanInvalidConfiguration("This compiler is not supported")
 
     def source(self):
-        get(self, **self.conan_data["sources"][self.version], strip_root = True)
+        src_git = self.conan_data["sources"][self.version]["git"] if "git" in self.conan_data["sources"][self.version].keys() else ""
+        src_branch = self.conan_data["sources"][self.version]["branch"] if "branch" in self.conan_data["sources"][self.version].keys() else "master"
+        if src_git != None and src_git != "":
+            try:
+                git = Git(self)
+                git.clone(src_git, target = ".", args = ["--single-branch", "--branch", src_branch, "--depth", "1"])
+            except Exception as exc:
+                print("git failed: ", exc)
+        else:
+            get(self, **self.conan_data["sources"][self.version], strip_root = True)
         apply_conandata_patches(self)
 
     def generate(self):
