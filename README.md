@@ -4,10 +4,11 @@ To use, clone this repository and export the recipe into the local Conan cache:
 
     git clone https://github.com/ncbi/ncbi-vdb-conan
     cd ncbi-vdb-conan
-    conan export . --version 3.1.1
+    conan export . --version 3.2.0
 
 NCBI VDB versions:
 
+- [3.2.0](https://github.com/ncbi/ncbi-vdb/releases/tag/3.2.0)
 - [3.1.1](https://github.com/ncbi/ncbi-vdb/releases/tag/3.1.1)
 - [3.1.0](https://github.com/ncbi/ncbi-vdb/releases/tag/3.1.0)
 - [3.0.10](https://github.com/ncbi/ncbi-vdb/releases/tag/3.0.10)
