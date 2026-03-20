@@ -1,4 +1,7 @@
 sources:
+  "3.4.0":
+    url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.4.0.tar.gz"
+    sha256: "ff7f49994620d2453043ccfcff1eb7d376bb6ab5402eaae127497a94b4a210b2"
   "3.3.0":
     url: "https://github.com/ncbi/ncbi-vdb/archive/refs/tags/3.3.0.tar.gz"
     sha256: "36b3467affd53bea794e3eeb5598619d820bc726dc68751a189181ac7973047d"

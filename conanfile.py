@@ -1,7 +1,7 @@
 from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.microsoft import is_msvc
-from conan.tools.files import apply_conandata_patches, export_conandata_patches, get, copy, collect_libs
+from conan.tools.files import apply_conandata_patches, export_conandata_patches, get, copy, collect_libs, trim_conandata
 from conan.tools.cmake import CMakeDeps, CMakeToolchain, CMake, cmake_layout
 from conan.tools.scm import Version
 from conan.tools.scm import Git
@@ -35,6 +35,7 @@ class NcbiVdb(ConanFile):
         return "arm64" if str(self.settings.arch) == "armv8" else str(self.settings.arch)
 
     def export(self):
+        trim_conandata(self)
         copy(self, self._requirements_filename, self.recipe_folder, self.export_folder)
 
     def export_sources(self):
